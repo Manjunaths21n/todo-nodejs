@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import './App.css'
 import { TodoItem } from './parts';
-import { EditorRenderer } from './editor';
+// import { EditorRenderer } from './editor';
 
-const serviceUrl = 'http://localhost:8888';
+// const serviceUrl = 'http://localhost:8888';
 
-const fetchTodos = async () => {
-  const response = await fetch(`${serviceUrl}/todos`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch todos');
-  }
-  return response.json();
-}
+// const fetchTodos = async () => {
+//   const response = await fetch(`${serviceUrl}/todos`);
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch todos');
+//   }
+//   return response.json();
+// }
 
-import { ApiService } from './service-layer/service';
+// import { ApiService } from './service-layer/service';
 
-const apiService = new ApiService(serviceUrl);
+// const apiService = new ApiService(serviceUrl);
 
 // import React from 'react';
 
@@ -26,22 +26,21 @@ const apiService = new ApiService(serviceUrl);
 function App() {
   const [todo, setTodo] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [showEditor, setShowEditor] = useState<boolean>(false);
 
-  useEffect(() => {
-    const loadTodos = async () => {
-      try {
-         await apiService.post<string[]>('/todos', { name: 'test' });
-        const res = await apiService.get<string[]>('/todos');
-        console.log('Fetched todos:', res);
-        // const todos = await fetchTodos();
-        // setTodo(todos);
-      } catch (error) {
-        console.error('Error loading todos:', error);
-      }
-    };
-    loadTodos();
-  }, []);
+  // useEffect(() => {
+  //   const loadTodos = async () => {
+  //     try {
+  //       await apiService.post<string[]>('/todos', { name: 'test' });
+  //       const res = await apiService.get<string[]>('/todos');
+  //       console.log('Fetched todos:', res);
+  //       // const todos = await fetchTodos();
+  //       // setTodo(todos);
+  //     } catch (error) {
+  //       console.error('Error loading todos:', error);
+  //     }
+  //   };
+  //   loadTodos();
+  // }, []);
 
 
   const onAddTodo = useCallback(() => {
@@ -77,11 +76,6 @@ function App() {
           <TodoItem index={index} item={item} onDelete={onDeleteTodo} />
         ))}
       </ul>
-      <button data-testid={'toggle-editor'} onClick={() => {
-        console.log(window?.monaco?.editor?.getModels());
-        console.log(window?.monaco?.editor?.getEditors()); setShowEditor(!showEditor);
-      }} >'Toggle Editor' </button>
-      {showEditor && <EditorRenderer />}
     </div>
   )
 }

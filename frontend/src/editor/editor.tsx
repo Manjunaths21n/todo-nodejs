@@ -1,5 +1,5 @@
 import { Editor } from "@monaco-editor/react"
-import React, { memo } from "react"
+import { memo } from "react"
 
 export const EditorRenderer = memo(() => {
     return (
