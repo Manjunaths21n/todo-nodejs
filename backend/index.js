@@ -7,10 +7,19 @@
 // http.createServer((req, res) => {
 //     res.end('Hello, World!');
 
-   
+
 // }).listen(8888, () => {
 //     console.log('Server running at http://localhost:8888/');
 // });
+const express = require('express');
+const app = express();
+
+app.get('/todos', (req, res) => {
+    res.send('hi');
+})
+
+app.listen(2222, () => { return 'setver is runtime with 2222' })
+
 
 const http = require('http');
 const { parse } = require('url');

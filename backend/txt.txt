@@ -1,0 +1,11 @@
+REST API's
+
+GET /todos => return all todos
+
+GET /todo/:status => return all todos with status
+
+post /todos => add new todo
+
+PATCH /todo/:id => update the todo with id 
+
+DELETE /todo/:id  => delete the todo with id
