@@ -1,15 +1,15 @@
-const {Todo} = require('../models/index.js');
+const { TodoModel } = require('../models/index.js');
 
-export const getTodos = async (req, res) => {
+const getTodos = async (req, res) => {
     try {
-        const todos = await Todo.find();
+        const todos = await TodoModel.find();
         res.status(200).json(todos);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching todos', error });
     }
 }
 
-export const createTodo = async (req, res) => { 
+const createTodo = async (req, res) => {
     const { todo, status, id } = req.body;
 
     if (!todo || !id) {
@@ -17,8 +17,8 @@ export const createTodo = async (req, res) => {
     }
 
     try {
-        const _newTodo= await Todo.create({todo, status, id});
-        res.status(201).json({success: 'Todo Created Successfully', todo: _newTodo});
+        const _newTodo = await TodoModel.create({ todo, status, id });
+        res.status(201).json({ success: 'Todo Created Successfully', todo: _newTodo });
 
         // const newTodo = new Todo({ todo, status, id });
         // await newTodo.save();
@@ -28,7 +28,7 @@ export const createTodo = async (req, res) => {
     }
 }
 
-export const updateTodo = async (req, res) => {
+const updateTodo = async (req, res) => {
     const { id } = req.params;
     const { todo, status } = req.body;
 
@@ -37,7 +37,7 @@ export const updateTodo = async (req, res) => {
     }
 
     try {
-        const updatedTodo = await Todo.findByIdAndUpdate(id, { todo, status }, { new: true });
+        const updatedTodo = await TodoModel.findByIdAndUpdate(id, { todo, status }, { new: true });
         if (!updatedTodo) {
             return res.status(404).json({ message: 'Todo not found' });
         }
@@ -47,11 +47,11 @@ export const updateTodo = async (req, res) => {
     }
 }
 
-export const deleteTodo = async (req, res) => {
+const deleteTodo = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedTodo = await Todo.findByIdAndDelete(id);
+        const deletedTodo = await TodoModel.findByIdAndDelete(id);
         if (!deletedTodo) {
             return res.status(404).json({ message: 'Todo not found' });
         }
@@ -60,3 +60,10 @@ export const deleteTodo = async (req, res) => {
         res.status(500).json({ message: 'Error deleting todo', error });
     }
 }
+
+module.exports = {
+    getTodos,
+    createTodo,
+    updateTodo,
+    deleteTodo
+};

@@ -1,6 +1,6 @@
-const { Todo } = require('./todo-model.js');
+const { TodoModel } = require('./todo-model.js');
 
 
 module.exports = {
-    Todo
+    TodoModel
 }

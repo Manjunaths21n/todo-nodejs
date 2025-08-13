@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const TodoSchema = new mongoose.Schema({
     todo: {
@@ -21,5 +21,5 @@ const TodoSchema = new mongoose.Schema({
 }, { timestamps: true }); // Automatically manage createdAt and updatedAt fields
 
 
-export const Todo = mongoose.model('Todo', TodoSchema);
-// export default Todo;
+const TodoModel = mongoose.model('Todo', TodoSchema);
+module.exports = { TodoModel };
