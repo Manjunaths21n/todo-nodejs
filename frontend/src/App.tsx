@@ -1,17 +1,22 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { TodoItem } from './parts';
 // import { EditorRenderer } from './editor';
 
-// const serviceUrl = 'http://localhost:8888';
+const serviceUrl = 'http://localhost:4000/api';
 
-// const fetchTodos = async () => {
-//   const response = await fetch(`${serviceUrl}/todos`);
-//   if (!response.ok) {
-//     throw new Error('Failed to fetch todos');
-//   }
-//   return response.json();
-// }
+const fetchTodos = async (url: string) => {
+  const response = await fetch(`${serviceUrl}/${url}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch todos');
+  }
+  return response.json();
+}
 
 // import { ApiService } from './service-layer/service';
 
@@ -23,7 +28,7 @@ import { TodoItem } from './parts';
 
 export interface ITodoItem {
   text: string;
-  status: 'yet-to-start' | 'active' | 'completed';
+  status: 'todo' | 'in-progress' | 'done';
 }
 
 function App() {
@@ -32,20 +37,27 @@ function App() {
   const [inputValue, setInputValue] = useState<string>('');
   const [searchValue, setSearchValue] = useState<string>('');
 
-  // useEffect(() => {
-  //   const loadTodos = async () => {
-  //     try {
-  //       await apiService.post<string[]>('/todos', { name: 'test' });
-  //       const res = await apiService.get<string[]>('/todos');
-  //       console.log('Fetched todos:', res);
-  //       // const todos = await fetchTodos();
-  //       // setTodo(todos);
-  //     } catch (error) {
-  //       console.error('Error loading todos:', error);
-  //     }
-  //   };
-  //   loadTodos();
-  // }, []);
+  useEffect(() => {
+    const loadTodos = async () => {
+      try {
+        // await apiService.post<string[]>('/todos', { name: 'test' });
+        const res = await fetchTodos('todos');
+        console.log('Fetched todos:', res);
+        setTodos(res.map((todo: { todo: string; status?: string }) => {
+          const status = todo.status || 'todo'; // Ensure status is set
+          return {
+            text: todo.todo,
+            status: status as ITodoItem['status'] | 'todo'
+          }
+        }));
+        // const todos = await fetchTodos();
+        // setTodo(todos);
+      } catch (error) {
+        console.error('Error loading todos:', error);
+      }
+    };
+    loadTodos();
+  }, []);
 
 
   const onAddTodo = useCallback(() => {
@@ -53,7 +65,7 @@ function App() {
       setTodos(prevState => {
         const newTodo = {
           text: inputValue,
-          status: 'yet-to-start' as const
+          status: 'todo' as const
         };
         const newTodos = [...prevState, newTodo];
         originalTodosRef.current = newTodos;
@@ -128,9 +140,9 @@ function App() {
       </div>
       <div className='filter-group'>
         <button className='todo-button filter-button active' onClick={() => filterTodos('all')}>All</button>
-        <button className='todo-button yet-to-start-button' onClick={() => filterTodos('yet-to-start')}>Yet to Start</button>
-        <button className='todo-button active-button' onClick={() => filterTodos('active')}>Active</button>
-        <button className='todo-button completed-button' onClick={() => filterTodos('completed')}>Completed</button>
+        <button className='todo-button yet-to-start-button' onClick={() => filterTodos('todo')}>Yet to Start</button>
+        <button className='todo-button active-button' onClick={() => filterTodos('in-progress')}>Active</button>
+        <button className='todo-button completed-button' onClick={() => filterTodos('done')}>Completed</button>
       </div>
       <ul>
         {todos.map((item, index) => (
