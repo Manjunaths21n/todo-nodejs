@@ -15,7 +15,7 @@ interface IApiService {
     get: (endpoint: string) => any;
     post: (endpoint: string, data: any) => any;
     update: (endpoint: string, data: any) => any;
-    delete(endpoint: string, id: string): any;
+    delete(endpoint: string): any;
 }
 
 

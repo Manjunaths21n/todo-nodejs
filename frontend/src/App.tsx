@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { TodoItem } from './parts';
 
-const serviceUrl = 'http://localhost:4000/api';
+// const serviceUrl = 'http://localhost:4000/api';
+const serviceUrl = import.meta.env.VITE_API_URL;
 
 import { ApiService } from './service-layer/service';
 

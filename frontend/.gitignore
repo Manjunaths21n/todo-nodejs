@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .early.coverage
+
+.env
+.env.local
+.env.development
+.env.production
