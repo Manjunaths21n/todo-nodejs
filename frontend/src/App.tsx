@@ -3,7 +3,11 @@ import './App.css'
 import { TodoItem } from './parts';
 
 // const serviceUrl = 'http://localhost:4000/api';
-const serviceUrl = import.meta.env.VITE_API_URL;
+const serviceUrl = import.meta.env.VITE_API_URL ?? (
+  import.meta.env.MODE === 'development' ?
+    'http://localhost:4000/api' :
+    'https://todo-nodejs-b4x0.onrender.com/api'
+);
 
 import { ApiService } from './service-layer/service';
 
