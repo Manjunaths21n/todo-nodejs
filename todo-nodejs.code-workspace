@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "name": "todo-nodejs",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "typescript.preferences.includePackageJsonAutoImports": "on",
+        "editor.formatOnSave": true,
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/.dist": true
+        }
+    },
+    "extensions": {
+        "recommendations": []
+    }
+}
