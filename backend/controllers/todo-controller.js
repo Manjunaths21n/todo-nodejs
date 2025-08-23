@@ -10,14 +10,14 @@ const getTodos = async (req, res) => {
 }
 
 const createTodo = async (req, res) => {
-    const { todo, status, id } = req.body;
+    const { todo, status } = req.body;
 
-    if (!todo || !id) {
-        return res.status(400).json({ message: 'Todo and ID are required' });
+    if (!todo) {
+        return res.status(400).json({ message: 'Todo is required' });
     }
 
     try {
-        const _newTodo = await TodoModel.create({ todo, status, id });
+        const _newTodo = await TodoModel.create({ todo, status });
         res.status(201).json({ success: 'Todo Created Successfully', todo: _newTodo });
 
         // const newTodo = new Todo({ todo, status, id });

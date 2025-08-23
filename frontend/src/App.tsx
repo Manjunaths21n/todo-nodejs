@@ -18,17 +18,14 @@ const fetchTodos = async (url: string) => {
   return response.json();
 }
 
-// import { ApiService } from './service-layer/service';
+import { ApiService } from './service-layer/service';
 
-// const apiService = new ApiService(serviceUrl);
-
-// import React from 'react';
-
-// export { apiService };
+const apiService = new ApiService(serviceUrl);
 
 export interface ITodoItem {
-  text: string;
+  todo: string;
   status: 'todo' | 'in-progress' | 'done';
+  id: string;
 }
 
 function App() {
@@ -37,41 +34,44 @@ function App() {
   const [inputValue, setInputValue] = useState<string>('');
   const [searchValue, setSearchValue] = useState<string>('');
 
+  const loadTodos = useCallback(async () => {
+    try {
+      const res = await apiService.get('todos');
+      console.log('Fetched todos:', res);
+      const refinedResponse: ITodoItem[] = res.map((todo: { todo: string; status?: string, _id?: string }) => {
+        const status = todo.status || 'todo'; // Ensure status is set
+        return {
+          todo: todo.todo,
+          status: status as ITodoItem['status'] | 'todo',
+          id: todo._id
+        }
+      });
+      setTodos(refinedResponse);
+    } catch (error) {
+      console.error('Error loading todos:', error);
+    }
+  }, []);
   useEffect(() => {
-    const loadTodos = async () => {
-      try {
-        // await apiService.post<string[]>('/todos', { name: 'test' });
-        const res = await fetchTodos('todos');
-        console.log('Fetched todos:', res);
-        setTodos(res.map((todo: { todo: string; status?: string }) => {
-          const status = todo.status || 'todo'; // Ensure status is set
-          return {
-            text: todo.todo,
-            status: status as ITodoItem['status'] | 'todo'
-          }
-        }));
-        // const todos = await fetchTodos();
-        // setTodo(todos);
-      } catch (error) {
-        console.error('Error loading todos:', error);
-      }
-    };
     loadTodos();
   }, []);
 
 
-  const onAddTodo = useCallback(() => {
+  const onAddTodo = useCallback(async () => {
     if (inputValue.trim()) {
+      const newTodo = {
+        todo: inputValue,
+        status: 'todo' as const,
+      };
+      const addTodoResponse = await apiService.post('todos', newTodo);
+      const newAddedTodo = addTodoResponse.todo;
+      console.log('newAddedTodo:', newAddedTodo);
+      const responseNewTodo: ITodoItem = { todo: newAddedTodo.todo, status: newAddedTodo.status, id: newAddedTodo._id };
       setTodos(prevState => {
-        const newTodo = {
-          text: inputValue,
-          status: 'todo' as const
-        };
-        const newTodos = [...prevState, newTodo];
+        const newTodos = [...prevState, responseNewTodo];
         originalTodosRef.current = newTodos;
-        setInputValue('');
         return newTodos;
       });
+      setInputValue('');
     }
   }, [inputValue]);
 
@@ -80,9 +80,11 @@ function App() {
     setSearchValue('');
   }, []);
 
-  const updateTodoStatus = useCallback((index: number, newStatus: ITodoItem['status']) => {
-    setTodos(prevState => {
-      const updatedTodos = [...prevState];
+  const updateTodoStatus = useCallback(async (modifiedItem: ITodoItem, newStatus: ITodoItem['status']) => {
+    await apiService.update(`todos/${modifiedItem.id}`, { ...modifiedItem, status: newStatus });
+    setTodos(preState => {
+      const updatedTodos = [...preState];
+      const index = preState.findIndex((({ id }) => id === modifiedItem.id));
       updatedTodos[index] = {
         ...updatedTodos[index],
         status: newStatus
@@ -109,19 +111,18 @@ function App() {
     setSearchValue(searchValue);
     if (searchValue) {
       setTodos(originalTodosRef.current.filter(todoItem =>
-        todoItem.text.includes(searchValue)
+        todoItem.todo.includes(searchValue)
       ));
     } else {
       setTodos(originalTodosRef.current);
     }
   }, []);
 
-  const onDeleteTodo = useCallback((index: number) => {
-    setTodos(prevTodos => {
-      const newTodos = prevTodos.filter((_, i) => i !== index);
-      originalTodosRef.current = newTodos; // Update the reference
-      return newTodos;
-    });
+  const onDeleteTodo = useCallback(async (id: string) => {
+    if (id) {
+      await apiService.delete(`todos/${id}`);
+    }
+    await loadTodos();
   }, []);
 
   return (

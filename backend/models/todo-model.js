@@ -10,10 +10,6 @@ const TodoSchema = new mongoose.Schema({
         enum: ['todo', 'in-progress', 'done'], // Only allows these values
         default: 'todo', // Default state is 'todo'
     },
-    id: {
-        type: String,
-        required: true,
-    },
     createdAt: {
         type: Date,
         default: Date.now, // Automatically set the creation date
