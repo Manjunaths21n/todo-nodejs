@@ -1,22 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { TodoItem } from './parts';
-// import { EditorRenderer } from './editor';
 
 const serviceUrl = 'http://localhost:4000/api';
-
-const fetchTodos = async (url: string) => {
-  const response = await fetch(`${serviceUrl}/${url}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch todos');
-  }
-  return response.json();
-}
 
 import { ApiService } from './service-layer/service';
 
