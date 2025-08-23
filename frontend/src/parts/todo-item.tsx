@@ -8,7 +8,7 @@ interface ITodoItemProps {
     onUpdateStatus: (item: ITodoItem, status: ITodoItem['status']) => void;
 }
 
-export const TodoItem = ({ item, index, onDelete, onUpdateStatus }: ITodoItemProps) => (
+export const TodoItem = ({ item, onDelete, onUpdateStatus }: ITodoItemProps) => (
     <div className='todo-item-container'>
         <li>{item.todo}</li>
         <div className="status-controls">
